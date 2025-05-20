@@ -1,10 +1,9 @@
 import EventItem from './components/EventItem';
-import eventsJSON from '../../data/events.json';
-import { useState } from 'react';
+import useEventsData from '../../hooks/useEventsData';
+
 
 const Events = ({ searchedEvent }) => {
-    const [data] = useState(eventsJSON);
-    const { _embedded: { events } } = data;
+    const { events, isLoading, error } = useEventsData();
     const handleEventClick = (id) => {
         console.log(`click en evento: ${id}`)
     }
@@ -18,8 +17,6 @@ const Events = ({ searchedEvent }) => {
             });
         };
 
-        console.log(filteredEvents)
-
         return filteredEvents.map((item) => (
             <EventItem
                 key={`event-item-${item.id}`}
@@ -30,6 +27,14 @@ const Events = ({ searchedEvent }) => {
                 id={item.id}
             />
         ));
+    }
+
+    if (isLoading) {
+        return <p>Cargando...</p>
+    }
+
+    if (error) {
+        return <p>Hubo un error: {error.message}</p>
     }
 
     return (
